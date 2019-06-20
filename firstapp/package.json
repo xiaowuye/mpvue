@@ -26,6 +26,7 @@
   "dependencies": {
     "babel": "^6.23.0",
     "babel-plugin-transform-remove-strict-mode": "0.0.2",
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "flyio": "^0.6.14",
     "jquery": "^3.4.1",

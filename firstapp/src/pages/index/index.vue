@@ -28,9 +28,8 @@ export default {
   methods: {
     test () {
       this.$Req.get({
-        url: 'getIndex'
+        url: 'getUserInfo'
       }).then(res => {
-        console.log(res)
       })
     }
     // bindViewTap () {

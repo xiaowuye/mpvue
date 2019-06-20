@@ -3,7 +3,7 @@
     <div class="users-content">
       <div class="users-headline">
         <img class="users-images" :src="defaultUsers">
-        <p class="users-enter"><a href="/pages/enter/main">登录/注册</a></p>
+        <p class="users-enter"><a v-show="detailState" href="/pages/enter/main">登录/注册</a><span v-show="userState">{{nickName}}</span></p>
       </div>
       <div class="me-list-content">
         <div class="me-list"><span>我的求助</span><i class="icon-arrows"></i></div>
@@ -25,10 +25,34 @@ export default {
   },
   data () {
     return {
-      defaultUsers: require('./../../images/users.png')
+      defaultUsers: require('./../../images/users.png'),
+      userState:false,
+      detailState:true,
+      nickName:'',
+      outBBL:false
+    }
+  },
+  onShow(){
+    this.getuserInfo()
+  },
+  methods: {
+    getuserInfo () {
+      if (this.userInfo) {
+        this.userState = true
+        this.detailState = false
+        this.defaultUsers = this.userInfo.avatarUrl
+        this.nickName = this.userInfo.nickName
+        this.outBBL = true
+      }else{
+        this.userState = false
+        this.detailState = true
+        this.defaultUsers = require('./../../images/users.png')
+        this.outBBL = false
+      }
     }
   },
   created () {
+
   }
 }
 </script>
@@ -56,7 +80,10 @@ export default {
         text-align: center;
         width:45%;
         margin:0 auto;
-        background-color:#FF6347;
+        background:-webkit-linear-gradient(#20B2AA, #DC143C);
+        background:-o-linear-gradient(#20B2AA, #DC143C);
+        background:-moz-linear-gradient(#20B2AA, #DC143C);
+        background:linear-gradient(#20B2AA, #DC143C);
         border-radius:0.35rem;
         height:0.7rem;
         line-height:0.7rem;

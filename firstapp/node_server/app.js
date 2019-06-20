@@ -5,7 +5,8 @@ const mysql = require('mysql');
 //导入cors模块,该模块为跨域所用
 const cors = require('cors');
 app.use(cors());
-
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
 //解析表单的插件
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,15 +27,18 @@ app.all('*', function(req, res, next) {  
     res.header("Access-Control-Allow-Headers", "X-Requested-With");  
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");  
     res.header("X-Powered-By", ' 3.2.1');  
-    res.header("Content-Type", "application/json;charset=utf-8");  
+    res.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");  
     next();
 });
 
 // 增加数据接口名称
-app.post('/submitIndex', (req, res) => {
+app.post('/addUserInfo', (req, res) => {
     const content = req.body;
-    const sqlStr = 'INSERT INTO node_data_1 (name, age) VALUES (?,?)';
-    const _mes_data = [content.name, content.age];
+    console.log(content)
+    console.log(content.nickName)
+    console.log(content.avatarUrl)
+    const sqlStr = 'INSERT INTO userInfo (nickName, avatarUrl) VALUES (?,?)';
+    const _mes_data = [content.nickName, content.avatarUrl];
     connection.query(sqlStr, _mes_data, (err, results) => {
         if (err) {
             console.log('[DELETE ERROR] - ', err.message);
@@ -46,7 +50,7 @@ app.post('/submitIndex', (req, res) => {
 //删除数据接口名称
 app.post('/delIndex', function(req, res) {
     let content = req.body;
-    const sqlStr = 'DELETE FROM node_data_1 WHERE id=' + content.id;
+    const sqlStr = 'DELETE FROM userInfo WHERE id=' + content.id;
     connection.query(sqlStr, function(err, rows) {
         if (err) {
             console.log('[DELETE ERROR] - ', err.message);
@@ -58,7 +62,7 @@ app.post('/delIndex', function(req, res) {
 // 修改数据接口名称
 app.post('/upDateIndex', function(req, res) {
     let content = req.body;
-    const sqlStr = 'UPDATE node_data_1 SET name = ?,age = ? WHERE id = ? ';
+    const sqlStr = 'UPDATE userInfo SET name = ?,age = ? WHERE id = ? ';
     const _mes_data = [content.name, content.age, content.id];
     connection.query(sqlStr, _mes_data, function(err, rows) {
         if (err) {
@@ -70,8 +74,8 @@ app.post('/upDateIndex', function(req, res) {
 });
 
 //查询数据接口名称
-app.get('/getIndex', function(req, res) {
-    const sql = 'select * from node_data_1';
+app.get('/getUserInfo', function(req, res) {
+    const sql = 'select * from userInfo';
     connection.query(sql, function(err, rows) {
         if (err) {
             console.log('[DELETE ERROR] - ', err.message);
@@ -85,7 +89,7 @@ app.get('/getIndex', function(req, res) {
 app.get('/getConditionIndex', function(req, res) {
     let sql;
     if (req.query.id != '') {
-        sql = 'select * from node_data_1 where id=' + req.query.id;
+        sql = 'select * from userInfo where id=' + req.query.id;
     } else {
         sql = 'select * from node_data_1';
     }
