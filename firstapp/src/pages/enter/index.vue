@@ -2,7 +2,7 @@
   <div>
     <div class="user-enter">
       <button class="user-btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo">微信授权-帮帮乐</button>
-      <div class="user-btn">手机号授权-帮帮乐</div>
+      <!-- <button class="user-btn" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">手机号绑定-帮帮乐</button> -->
     </div>
   </div>
 </template>
@@ -55,20 +55,27 @@ export default {
                                       Vue.prototype.userInfo = res.userInfo
                                       let data = {
                                         nickName: res.userInfo.nickName,
-                                        avatarUrl: res.userInfo.avatarUrl
+                                        avatarUrl: res.userInfo.avatarUrl,
+                                        code:code
                                       }
                                       that.$Req.post({
                                         url: 'addUserInfo',
                                         data: data,
                                       }).then(res => {
-
+                                        wx.showToast({
+                                          title: '登录成功',
+                                          icon: 'success',
+                                          duration: 2000,
+                                          success:(res=>{
+                                            const url = '../me/main'
+                                            if (mpvuePlatform === 'wx') {
+                                              mpvue.switchTab({ url })
+                                            } else {
+                                              mpvue.navigateTo({ url })
+                                            }
+                                          })
+                                        })
                                       })
-                                      const url = '../me/main'
-                                      if (mpvuePlatform === 'wx') {
-                                        mpvue.switchTab({ url })
-                                      } else {
-                                        mpvue.navigateTo({ url })
-                                      }
                                     },
                                 })
                             }else{

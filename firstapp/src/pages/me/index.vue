@@ -6,22 +6,25 @@
         <p class="users-enter"><a v-show="detailState" href="/pages/enter/main">登录/注册</a><span v-show="userState">{{nickName}}</span></p>
       </div>
       <div class="me-list-content">
-        <div class="me-list"><span>我的求助</span><i class="icon-arrows"></i></div>
-        <div class="me-list"><span>我的订单</span><i class="icon-arrows"></i></div>
-        <div class="me-list"><span>我的资金</span><i class="icon-arrows"></i></div>
-        <div class="me-list"><span>成为帮帮手</span><i class="icon-arrows"></i></div>
-        <div class="me-list"><span>语言设置</span><i class="icon-arrows"></i></div>
+        <div v-for="res in listJson" :key="res.id" @click="operationListJsonData(res.id)" class="me-list">
+          <span>{{res.textName}}</span>
+          <i class="icon-arrows"></i>
+        </div>
+        <div @click="operationListJsonData(5)" class="me-list"><span>语言设置</span><i class="icon-arrows"></i></div>
       </div>
     </div>
+    <mp-toast :type="loginAssociated.type" v-model="loginAssociated.showToast" :content="loginAssociated.content" :duration="loginAssociated.duration"></mp-toast>
   </div>
 </template>
 
 <script>
 import card from '@/components/card'
+import mpToast from 'mpvue-weui/src/toast';
 
 export default {
   components: {
-    card
+    card,
+    mpToast
   },
   data () {
     return {
@@ -29,25 +32,80 @@ export default {
       userState:false,
       detailState:true,
       nickName:'',
-      outBBL:false
+      token_code:wx.getStorageSync("token_code"),
+      listJson:[{
+        id:1,
+        textName:'我的求助'
+      },{
+        id:2,
+        textName:'我的订单'
+      },{
+        id:3,
+        textName:'我的资金'
+      },{
+        id:4,
+        textName:'成为帮帮手'
+      }],
+      loginAssociated:{
+        content:'123',//登录提示语
+        showToast:false,//是否显示
+        type:'error',//显示类型
+        duration:1500//显示时间
+      }
     }
   },
   onShow(){
-    this.getuserInfo()
+    this.getUserMessage();
   },
   methods: {
-    getuserInfo () {
-      if (this.userInfo) {
-        this.userState = true
-        this.detailState = false
-        this.defaultUsers = this.userInfo.avatarUrl
-        this.nickName = this.userInfo.nickName
-        this.outBBL = true
-      }else{
-        this.userState = false
-        this.detailState = true
-        this.defaultUsers = require('./../../images/users.png')
-        this.outBBL = false
+    getUserMessage () {
+      if(this.token_code){
+        let data = {
+          code: this.token_code
+        }
+        this.$Req.get({
+          url: 'getConditionIndex',
+          data: data,
+        }).then(res => {
+          if(res.message.length != 0){
+            this.userState = true
+            this.detailState = false
+            this.defaultUsers = res.message[0].avatarUrl
+            this.nickName = res.message[0].nickName
+          }
+        })
+      }
+    },
+    operationListJsonData (id){
+      if(id){
+        if(this.token_code && this.token_code != ''){
+          console.log('登录，跳转页面')
+          switch(id) {
+               case 1:
+                  console.log(1111)
+                  break;
+               case 2:
+                  console.log(2222)
+                  break;
+              case 3:
+                  console.log(3333)
+                  break;
+              case 4:
+                  console.log(4444)
+                  break;
+               default:
+                  console.log(5555)
+            }
+        }else{
+          this.loginAssociated.content = '尚未登录'
+          this.loginAssociated.showToast = true
+          setTimeout(function(){
+            let url = '../enter/main'
+            if (mpvuePlatform === 'wx') {
+              mpvue.navigateTo({ url })
+            }
+          },1500)
+        }
       }
     }
   },

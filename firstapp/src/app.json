@@ -4,7 +4,8 @@
     "pages/me/main",
     "pages/order/main",
     "pages/counter/main",
-    "pages/enter/main"
+    "pages/enter/main",
+    "pages/orderDetail/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

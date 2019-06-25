@@ -34,11 +34,9 @@ app.all('*', function(req, res, next) {  
 // 增加数据接口名称
 app.post('/addUserInfo', (req, res) => {
     const content = req.body;
-    console.log(content)
-    console.log(content.nickName)
-    console.log(content.avatarUrl)
-    const sqlStr = 'INSERT INTO userInfo (nickName, avatarUrl) VALUES (?,?)';
-    const _mes_data = [content.nickName, content.avatarUrl];
+    console.log(content.code)
+    const sqlStr = 'INSERT INTO userInfo (nickName, avatarUrl, code) VALUES (?,?,?)';
+    const _mes_data = [content.nickName, content.avatarUrl, content.code];
     connection.query(sqlStr, _mes_data, (err, results) => {
         if (err) {
             console.log('[DELETE ERROR] - ', err.message);
@@ -88,10 +86,11 @@ app.get('/getUserInfo', function(req, res) {
 //按照条件查询数据接口名称
 app.get('/getConditionIndex', function(req, res) {
     let sql;
-    if (req.query.id != '') {
-        sql = 'select * from userInfo where id=' + req.query.id;
+    if (req.query.code != '') {
+        let code = req.query.code;
+        sql = 'select * from userInfo where code = "'+ code +'"';
     } else {
-        sql = 'select * from node_data_1';
+        sql = 'select * from userInfo';
     }
     connection.query(sql, function(err, rows) {
         if (err) {
